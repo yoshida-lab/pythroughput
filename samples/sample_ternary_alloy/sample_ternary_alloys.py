@@ -24,7 +24,7 @@ if __name__ == "__main__":
     structs_path = {}
     
     for struct_name in ("Fe4OF7", "Fe4OF8", "Fe6OF11"):
-        struct_path[struct_name] = ("./inputs/" + struct_name + "/POSCAR")
+        structs_path[struct_name] = ("./inputs/" + struct_name + "/POSCAR")
     
     structs = {}
     for struct_name, struct_path in structs_path.items():
