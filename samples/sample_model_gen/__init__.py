@@ -5,4 +5,4 @@
 from . import sample_exchange_atom
 from . import sample_modify_atom_coord
 from . import sample_modify_cell_size
-from . import sample_ternary_alloys
+from . import sample_ternary_alloy
