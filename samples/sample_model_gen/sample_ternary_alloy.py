@@ -34,11 +34,11 @@ if __name__ == "__main__":
                 filename=struct_name,
                 atom_num_limit=10,
                 output_format="poscar",
-                output_path="./outputs/sample_ternary_alloys/" + struct_name + "/"
+                output_path="./outputs/sample_ternary_alloy/" + struct_name + "/"
             )
             
             modelgen_obj.modify_atom_coord()
             modelgen_obj.modify_cell_size()
             modelgen_obj.export_dict(
-                filename="./outputs/sample_ternary_alloys/"+struct_name + "/POSCAR"+ str(i+1)
+                filename="./outputs/sample_ternary_alloy/"+struct_name + "/POSCAR"+ str(i+1)
             )
