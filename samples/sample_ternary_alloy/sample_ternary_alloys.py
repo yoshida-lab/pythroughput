@@ -21,14 +21,16 @@ logger = logging.getLogger(__name__)
 
 
 if __name__ == "__main__":
-    structs_path = {}
+    with open("outputs/sample_ternary_alloys/csv/results.csv", mode="w") as file:
+        writer = csv.writer(file, lineterminator="\n")
+        writer.writerow(["struct_name", "total energy[eV]"])
     
+    structs_path = {}
     for struct_name in ("Fe4OF7", "Fe4OF8", "Fe6OF11"):
         structs_path[struct_name] = ("./inputs/" + struct_name + "/POSCAR")
     
-    structs = {}
     for struct_name, struct_path in structs_path.items():
-        
+        structs = {}
         structs[struct_name] = pymatgen.Structure.from_str(
             open(struct_path + "_" + struct_name).read(),
             fmt="poscar"
@@ -40,16 +42,18 @@ if __name__ == "__main__":
                 fmt="poscar"
             )
     
-    pythroughput_obj = PyHighThroughput(
-        txt_output=True,
-        txt_output_path="./outputs/sample_ternary_alloys/calc/",
-        **structs
-    )
-    pythroughput_obj.run()
+        pythroughput_obj = PyHighThroughput(
+            txt_output=True,
+            txt_output_path="./outputs/sample_ternary_alloys/calc/",
+            **structs
+        )
+        pythroughput_obj.run()
     
-    with open("outputs/sample_ternary_alloys/csv/results.csv", mode="w") as file:
-        writer = csv.writer(file, lineterminator="\n")
-        writer.writerow(["struct_name", "total energy [eV]"])
-        
-        for struct_name, results in pythroughput_obj.results.items():
-            writer.writerow([struct_name, results["total_energy"]])
+        with open("outputs/sample_ternary_alloys/csv/results.csv", mode="a") as file:
+            writer = csv.writer(file, lineterminator="\n")
+            for struct_name, results in pythroughput_obj.results.items():
+                try:
+                    writer.writerow([struct_name, results["total_energy"]])
+                except KeyError:
+                    writer.writerow([struct_name, "unconverged"])
+ 

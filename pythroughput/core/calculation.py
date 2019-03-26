@@ -137,7 +137,7 @@ class PyHighThroughput(object):
         except KohnShamConvergenceError:
             return (
                 struct_name,
-                "Unconverged"
+                {"results": "Unconverged"}
             )
         
     def _update_calculator(self,
