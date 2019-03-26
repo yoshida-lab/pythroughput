@@ -218,8 +218,7 @@ class Calculation(object):
             results = {}
             if not steps is 1:
                 results["relax_struct"] = self._get_relax_struct(steps)
-            else:
-                results["total_energy"] = self._get_total_energy()
+            results["total_energy"] = self._get_total_energy()
             return results
     
     def _is_not_invalid_struct(self):
