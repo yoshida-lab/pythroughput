@@ -6,7 +6,7 @@ import logging
 import csv
 import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 
 import pymatgen
 from pymatgen.io.vasp.inputs import Poscar
@@ -21,13 +21,13 @@ logger = logging.getLogger(__name__)
 
 
 if __name__ == "__main__":
-    with open("outputs/sample_ternary_alloy/csv/results.csv", mode="w") as file:
+    with open("./../outputs/sample_ternary_alloy/csv_vasp/results.csv", mode="w") as file:
         writer = csv.writer(file, lineterminator="\n")
         writer.writerow(["struct_name", "total energy[eV]"])
     
     structs_path = {}
     for struct_name in ("Fe4OF7", "Fe4OF8", "Fe6OF11"):
-        structs_path[struct_name] = ("./inputs/" + struct_name + "/POSCAR")
+        structs_path[struct_name] = ("./../inputs/" + struct_name + "/POSCAR")
     
     for struct_name, struct_path in structs_path.items():
         structs = {}
@@ -43,12 +43,13 @@ if __name__ == "__main__":
             )
     
         pythroughput_obj = PyHighThroughput(
-            output_path="./outputs/sample_ternary_alloy/calc/",
+            input_path="../../default_pot/vasp/",
+            output_path="./../outputs/sample_ternary_alloy/calc_vasp/",
             **structs
         )
-        pythroughput_obj.run()
+        pythroughput_obj.run(package="vasp")
     
-        with open("outputs/sample_ternary_alloy/csv/results.csv", mode="a") as file:
+        with open("./../outputs/sample_ternary_alloy/csv_vasp/results.csv", mode="a") as file:
             writer = csv.writer(file, lineterminator="\n")
             for struct_name, results in pythroughput_obj.results.items():
                 try:
