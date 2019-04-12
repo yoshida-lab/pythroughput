@@ -14,6 +14,11 @@ try:
 except ModuleNotFoundError:
     print("Raise ModuleNotFoundError: You cannot use GPAW in this system!")
     pass
+try:
+    from pythroughput.core.calculation_vasp import Calculation_vasp
+except ModuleNotFoundError:
+    print("Raise ModuleNotFoundError: You cannot use VASP in this system!")
+    pass
 
 """
 Classes to performe high-throughput first-principles calculation.
@@ -64,7 +69,7 @@ class PyHighThroughput(object):
         self.input_path = input_path
         self.output_path = output_path
     
-    def run(self, steps=1):
+    def run(self, steps=1, package="gpaw"):
         """
         Runs high-throughput first-principles calculation.
         
@@ -72,6 +77,8 @@ class PyHighThroughput(object):
         ---------
         steps: int
             Number of relaxation steps.
+        package: str
+            First-principles calculation package using in calculation.
         
         Returns
         -------
@@ -82,10 +89,10 @@ class PyHighThroughput(object):
         """
         results = {}
         for struct_name, struct in self.structs.items():
-            results[struct_name] = self._calc(struct_name, struct, steps)
+            results[struct_name] = self._calc(struct_name, struct, steps, package)
         return self.results
     
-    def _calc(self, struct_name, struct, steps):
+    def _calc(self, struct_name, struct, steps, package):
         """
         Runs first-principles calculation.
         
@@ -97,6 +104,8 @@ class PyHighThroughput(object):
             Atomic structure itself.
         steps:
             Number of relaxation steps.
+        package: str
+            First-principles calculation package using in calculation.
         
         Parameters
         ----------
@@ -110,17 +119,25 @@ class PyHighThroughput(object):
             Calculation results return by get_results method.
         """
         struct_calculator = self._set_dafault_calculator(struct_name, struct)
-        try:
-            return (
-                struct_name,
-                Calculation(struct_name, struct, struct_calculator).get_results(steps)
-            )
-        except KohnShamConvergenceError:
-            return (
-                struct_name,
-                {"results": "Unconverged"}
-            )
         
+        if package is "gpaw"
+            try:
+                return (
+                    struct_name,
+                    Calculation(struct_name, struct, struct_calculator).get_results(steps=steps)
+                )
+            except KohnShamConvergenceError:
+                return (
+                    struct_name,
+                    {"results": "Unconverged"}
+                )
+        elif package is "vasp":
+            return (
+                struct_name,
+                Calculation_vasp(struct_name, struct, struct_calculator, self.input_path).get_results(steps=steps)
+        else:
+            pass
+    
     def _set_default_calculator(self, struct_name, struct):
         """
         Sets default calculation configulations which are different
