@@ -38,6 +38,7 @@ class Calculation_vasp(object):
             Path to pseudo-potential database using in VASP calculation.
         """
         self._struct_name = struct_name
+        self._struct = struct
         self._output_path = self._set_output_path(calculator["txt"])
         self._write_input_files(struct, calculator, potential_path)
     
@@ -242,6 +243,7 @@ class Calculation_vasp(object):
         
         results["struct_name"] = self._struct_name
         results["total_energy"] = self._get_total_energy(vasprun)
+        results["formula"] = self._struct.formula
         
         self._mv_output_files(backup_file_list)
         

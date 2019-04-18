@@ -190,6 +190,7 @@ class Calculation(object):
             Calculation configurations.
         """
         self._struct_name = struct_name
+        self._struct = struct
         try:
             self._atom = AseAtomsAdaptor.get_atoms(struct, **struct.site_properties)
             self._atom.set_calculator(GPAW(**calculator))
@@ -220,6 +221,7 @@ class Calculation(object):
             else:
                 pass
             results["total_energy"] = self._get_total_energy()
+            results["formula"] = self._struct.formula
             return results
     
     def _is_not_invalid_struct(self):
