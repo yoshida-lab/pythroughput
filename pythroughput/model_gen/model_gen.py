@@ -5,7 +5,6 @@
 import logging
 import random
 import math
-
 import pymatgen
 from pymatgen.io.vasp.inputs import Poscar
 
@@ -243,7 +242,3 @@ class Modelgen(object):
                 file.writelines(str(Poscar(struct)))
         else:
             raise UndefinedFormatError(format)
-    
-
-if __name__ == "__main__":
-    pass
