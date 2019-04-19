@@ -3,3 +3,4 @@
 # Distributed under the terms of the BSD 3-clause License.
 
 from . import sample_atomization
+from .vasp import sample_atomization_vasp
