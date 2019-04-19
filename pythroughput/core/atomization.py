@@ -59,7 +59,7 @@ class AtomizationCalculator(object):
         self.calculator = calculator
         self.standard_struct_path = standard_struct_path
     
-    def get_atomization_energy(self, package="gpaw"):
+    def get_atomization_energy(self, package="gpaw", input_path=None):
         """
         Gets atomization energy.
         
@@ -68,8 +68,11 @@ class AtomizationCalculator(object):
         package: str
             Calculation package using in calculation.
             Default: "gpaw"
+        input_path: str or None
+            Path to input files other than structure files using in calculation.
+            e.g.) path to potential files using in VASP calculation.
         """
-        self.standard_energy = self.calc_standard_energy(package)
+        self.standard_energy = self.calc_standard_energy(package, input_path)
         self.calc_atomization_energy()
     
     def calc_standard_energy(self, package, input_path=None):
@@ -109,7 +112,6 @@ class AtomizationCalculator(object):
             **structs
         )
         standard_energy.run(package=package)
-        print(standard_energy.results)
         return standard_energy.results
     
     def calc_atomization_energy(self):
