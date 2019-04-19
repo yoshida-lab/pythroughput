@@ -87,9 +87,9 @@ class PyHighThroughput(object):
             the name of structure as a key and the result of
             calculation as a value.
         """
-        results = {}
+        self.results = {}
         for struct_name, struct in self.structs.items():
-            results[struct_name] = self._calc(struct_name, struct, steps, package)
+            self.results[struct_name] = self._calc(struct_name, struct, steps, package)
         return self.results
     
     def _calc(self, struct_name, struct, steps, package):
@@ -122,20 +122,11 @@ class PyHighThroughput(object):
         
         if package is "gpaw":
             try:
-                return (
-                    struct_name,
-                    Calculation(struct_name, struct, struct_calculator).get_results(steps=steps)
-                )
+                return Calculation(struct_name, struct, struct_calculator).get_results(steps=steps)
             except KohnShamConvergenceError:
-                return (
-                    struct_name,
-                    {"results": "Unconverged"}
-                )
+                return {"results": "Unconverged"}
         elif package is "vasp":
-            return (
-                struct_name,
-                Calculation_vasp(struct_name, struct, struct_calculator, self.input_path).get_results(steps=steps)
-            )
+            return Calculation_vasp(struct_name, struct, struct_calculator, self.input_path).get_results(steps=steps)
         else:
             pass
     
