@@ -61,7 +61,7 @@ class Calculation_vasp(object):
         if output_path is not None:
             path = os.path.splitext(output_path)[0]
         else:
-            path = "outputs/" + self._struct_name
+            return None
         if not os.path.exists(path):
             os.makedirs(path, exist_ok=True)
         return path
@@ -241,11 +241,11 @@ class Calculation_vasp(object):
         self._run_vasp(n_jobs)
         vasprun = Vasprun("vasprun.xml")
         
-        results["struct_name"] = self._struct_name
         results["total_energy"] = self._get_total_energy(vasprun)
         results["formula"] = self._struct.formula
         
-        self._mv_output_files(backup_file_list)
+        if self._output_path is not None:
+            self._mv_output_files(backup_file_list)
         
         return results
     
