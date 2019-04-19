@@ -118,9 +118,9 @@ class PyHighThroughput(object):
         dict
             Calculation results return by get_results method.
         """
-        struct_calculator = self._set_dafault_calculator(struct_name, struct)
+        struct_calculator = self._set_default_calculator(struct_name, struct)
         
-        if package is "gpaw"
+        if package is "gpaw":
             try:
                 return (
                     struct_name,
@@ -135,6 +135,7 @@ class PyHighThroughput(object):
             return (
                 struct_name,
                 Calculation_vasp(struct_name, struct, struct_calculator, self.input_path).get_results(steps=steps)
+            )
         else:
             pass
     
@@ -157,7 +158,7 @@ class PyHighThroughput(object):
             depending on structures.
         """
         struct_calculator = self.calculator
-        if self.output_path is not None
+        if self.output_path is not None:
             struct_calculator["txt"] = self.output_path + struct_name + ".txt"
         else:
             struct_calculator["txt"] = None
