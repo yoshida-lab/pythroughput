@@ -241,6 +241,8 @@ class Calculation_vasp(object):
         self._run_vasp(n_jobs)
         vasprun = Vasprun("vasprun.xml")
         
+        if not steps is 1:
+            results["initial_energy"] = self._get_initial_energy(vasprun)
         results["total_energy"] = self._get_total_energy(vasprun)
         results["formula"] = self._struct.formula
         
@@ -277,6 +279,29 @@ class Calculation_vasp(object):
             Calculated total energy [eV].
         """
         return float(vasprun.final_energy)
+    
+    def _get_initial_energy(vasprun):
+        """
+        Gets initial energy of first step ().
+        
+        Arguments
+        ---------
+        vasprun: pymatgen.io.vasp.outputs.Vasprun
+            vasprun.xml file, which includes all calculation results.
+        
+        Returns
+        -------
+        initial_energy: float
+            Calculated total energy of initial structure [eV].
+        """
+        try:
+            initial_istep = vasprun.ionic_steps[0]
+            if initial_istep["e_wo_entrp"] != initial_istep[
+                    'electronic_steps'][0]["e_0_energy"]:
+                return float(initial_istep["e_wo_entrp"])
+            return float(initial_istep['electronic_steps'][0]["e_0_energy"])
+        except (IndexError, KeyError):
+            return float('inf')
     
     def _mv_output_files(self, backup_file_list):
         """
