@@ -130,7 +130,6 @@ class AtomizationCalculator(object):
                     self.standard_energy[specie]["total_energy"] / float(standard_num) * float(specie_num)
                 )
             
+            if result.get("initial_energy") is not None:
+                results["initial_atomization"] = results["initial_energy"] - standard_energy_sum
             result["atomization_energy"] = result["total_energy"] - standard_energy_sum
-
-
-
