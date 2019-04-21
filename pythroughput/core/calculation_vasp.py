@@ -116,6 +116,7 @@ class Calculation_vasp(object):
                       "ISTART": 0,
                       "ICHARG": 2,
                       "ISPIN": 1,
+                      "IBRION": 1,
                       "ISYM": 0}
         
         if calculator.get("maxiter") is not None:
@@ -280,7 +281,7 @@ class Calculation_vasp(object):
         """
         return float(vasprun.final_energy)
     
-    def _get_initial_energy(vasprun):
+    def _get_initial_energy(self, vasprun):
         """
         Gets initial energy of first step ().
         
