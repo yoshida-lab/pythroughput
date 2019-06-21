@@ -131,5 +131,5 @@ class AtomizationCalculator(object):
                 )
             
             if result.get("initial_energy") is not None:
-                results["initial_atomization"] = results["initial_energy"] - standard_energy_sum
+                result["initial_atomization"] = result["initial_energy"] - standard_energy_sum
             result["atomization_energy"] = result["total_energy"] - standard_energy_sum
