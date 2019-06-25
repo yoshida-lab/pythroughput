@@ -4,6 +4,7 @@
 
 default_pot/
 works/
+samples/samples_old_version
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
