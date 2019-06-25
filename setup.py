@@ -14,7 +14,7 @@ with open('LICENSE') as file:
 
 setup(
     name="pythroughput",
-    version="1.0",
+    version="1.0.1",
     description="Python module to perform high-throughput first-principles calculation in 'Xenonpy' package.",
     long_description=readme,
     author="Taku MURAKAMI",
