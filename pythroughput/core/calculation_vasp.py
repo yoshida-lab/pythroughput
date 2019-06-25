@@ -245,6 +245,8 @@ class Calculation_vasp(object):
         if not steps is 1:
             results["initial_energy"] = self._get_initial_energy(vasprun)
         results["total_energy"] = self._get_total_energy(vasprun)
+        results["initial_forces"] = self._get_initial_forces(vasprun)
+        results["final_forces"] = self._get_final_forces(vasprun)
         results["formula"] = self._struct.formula
         
         if self._output_path is not None:
@@ -303,6 +305,38 @@ class Calculation_vasp(object):
             return float(initial_istep['electronic_steps'][0]["e_0_energy"])
         except (IndexError, KeyError):
             return float('inf')
+    
+    def _get_initial_forces(self, vasprun):
+        """
+        Gets initial force.
+        
+        Arguments
+        ---------
+        vasprun: pytmatgen.io.vasp.outputs.Vasprun
+            vasprun.xml file, which includes all calculation results.
+        
+        Returns
+        -------
+        list
+            Calculated force for every elements [eV/A].
+        """
+        return vasprun.ionic_steps[0]["forces"]
+    
+    def _get_final_forces(self, vasprun):
+        """
+        Gets final force.
+        
+        Arguments
+        ---------
+        vasprun: pymatgen.io.vasp.outputs.Vasprun
+            vasprun.xml file, which includes all calculation results.
+        
+        Returns
+        -------
+        list
+            Calculated force for every elements [eV/A].
+        """
+        return vasprun.ionic_steps[-1]["forces"]
     
     def _mv_output_files(self, backup_file_list):
         """
