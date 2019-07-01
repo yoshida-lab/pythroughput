@@ -6,6 +6,7 @@ import logging
 import os
 import csv
 import subprocess
+import xml.etree.cElementTree as ET
 import pymatgen
 from pymatgen.io.vasp.inputs import Poscar
 from pymatgen.io.vasp.inputs import Incar
@@ -240,7 +241,15 @@ class Calculation_vasp(object):
             backup_file_list.append("CONTCAR")
         
         self._run_vasp(n_jobs)
-        vasprun = Vasprun("vasprun.xml")
+        try:
+            vasprun = Vasprun("vasprun.xml")
+        # Treating unconverged calculation.
+        except ET.ParseError:
+            results["error"] = "ParseError"
+            return results
+        except ValueError:
+            results["error"] = "ValueError"
+            return results
         
         if not steps is 1:
             results["initial_energy"] = self._get_initial_energy(vasprun)
