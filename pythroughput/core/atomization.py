@@ -122,14 +122,18 @@ class AtomizationCalculator(object):
             
             standard_energy_sum = 0
             
-            for formula in result["formula"].split(" "):
-                specie = re.search("\D+", formula).group(0)
-                specie_num = re.search("\d+", formula).group(0)
-                standard_num = re.search("\d+", self.standard_energy[specie]["formula"]).group(0)
-                standard_energy_sum += (
-                    self.standard_energy[specie]["total_energy"] / float(standard_num) * float(specie_num)
-                )
+            try:
+                for formula in result["formula"].split(" "):
+                    specie = re.search("\D+", formula).group(0)
+                    specie_num = re.search("\d+", formula).group(0)
+                    standard_num = re.search(
+                        "\d+", self.standard_energy[specie]["formula"]).group(0)
+                    standard_energy_sum += (
+                        self.standard_energy[specie]["total_energy"] / 
+                        float(standard_num) * float(specie_num))
             
-            if result.get("initial_energy") is not None:
-                result["initial_atomization"] = result["initial_energy"] - standard_energy_sum
-            result["atomization_energy"] = result["total_energy"] - standard_energy_sum
+                if result.get("initial_energy") is not None:
+                    result["initial_atomization"] = result["initial_energy"] - standard_energy_sum
+                result["atomization_energy"] = result["total_energy"] - standard_energy_sum
+            except KeyError:
+                result["error"] = "KeyError"
