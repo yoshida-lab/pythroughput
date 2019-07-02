@@ -129,7 +129,7 @@ class Calculation_vasp(object):
         if calculator.get("maxiter") is not None:
             incar_dict["NELM"] = calculator["maxiter"]
         
-        if caluclator.get("isif") is not None:
+        if calculator.get("isif") is not None:
             incar_dict["isif"] = calculator["isif"]
         
         with open("INCAR", mode="w") as file:
