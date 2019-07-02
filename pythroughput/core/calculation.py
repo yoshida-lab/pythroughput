@@ -5,6 +5,7 @@
 import logging
 import os
 import pymatgen
+from pymatgen.io.vasp.outputs import Vasprun
 from pymatgen.io.ase import AseAtomsAdaptor
 try:
     from ase import Atom
@@ -90,6 +91,32 @@ class PyHighThroughput(object):
         self.results = {}
         for struct_name, struct in self.structs.items():
             self.results[struct_name] = self._calc(struct_name, struct, steps, package)
+        return self.results
+    
+    def read(self, package="gpaw"):
+        """
+        Reads calculation results from calculated file.
+        
+        Arguments
+        ---------
+        package: str
+            First-principles calculation package using in calculation.
+        
+        Returns
+        -------
+        results: dict
+            Dictionary of calculation results, which consists of
+            the name of structure as a key and the result of
+            calculation as a value.
+        """
+        self.results = {}
+        if package is "gpaw":
+            pass
+        elif package is "vasp":
+            for struct_name, struct in self.structs.items():
+                self.results[struct_name] = Calculation_vasp(
+                    struct_name, struct, None, None
+                ).read_results(Vasprun(self.output_path+struct_name+"/vasprun.xml"))
         return self.results
     
     def _calc(self, struct_name, struct, steps, package):

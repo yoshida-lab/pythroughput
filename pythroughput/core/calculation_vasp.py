@@ -40,8 +40,13 @@ class Calculation_vasp(object):
         """
         self._struct_name = struct_name
         self._struct = struct
-        self._output_path = self._set_output_path(calculator["txt"])
-        self._write_input_files(struct, calculator, potential_path)
+        try:
+            self._output_path = self._set_output_path(calculator["txt"])
+            self._write_input_files(struct, calculator, potential_path)
+        except KeyError:
+            pass
+        except TypeError:
+            pass
     
     def _set_output_path(self, output_path):
         """
@@ -118,10 +123,14 @@ class Calculation_vasp(object):
                       "ICHARG": 2,
                       "ISPIN": 1,
                       "IBRION": 1,
-                      "ISYM": 0}
+                      "ISYM": 0,
+                      "ISIF": 3}
         
         if calculator.get("maxiter") is not None:
             incar_dict["NELM"] = calculator["maxiter"]
+        
+        if caluclator.get("isif") is not None:
+            incar_dict["isif"] = calculator["isif"]
         
         with open("INCAR", mode="w") as file:
             file.writelines(str(Incar(incar_dict)))
@@ -251,15 +260,35 @@ class Calculation_vasp(object):
             results["error"] = "ValueError"
             return results
         
+        results = self.read_results(vasprun, steps)
+        
+        if self._output_path is not None:
+            self._mv_output_files(backup_file_list)
+        
+        return results
+    
+    def read_results(self, vasprun, steps=2):
+        """
+        Reads results from calculated files, vasprun.xml.
+        
+        Arguments
+        ---------
+        vasprun: pymatgen.io.vasp.outputs.Vasprun
+            vasprun.xml file, which includes all calculation results.
+        
+        Returns
+        -------
+        results: dict
+            dictionary of caluclation results.
+        """
+        results = {}
+        
         if not steps is 1:
             results["initial_energy"] = self._get_initial_energy(vasprun)
         results["total_energy"] = self._get_total_energy(vasprun)
         results["initial_forces"] = self._get_initial_forces(vasprun)
         results["final_forces"] = self._get_final_forces(vasprun)
         results["formula"] = self._struct.formula
-        
-        if self._output_path is not None:
-            self._mv_output_files(backup_file_list)
         
         return results
     
