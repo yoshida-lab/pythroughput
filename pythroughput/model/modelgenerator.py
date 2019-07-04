@@ -15,7 +15,7 @@ Model generator.
 logger = logging.getLogger(__name__)
 
 
-class ModelGeneretor(object):
+class ModelGenerator(object):
     """
     Model generator. It can support symmetrical and unsymmetrical modification of models.
     In unsymmetrical modification, modifing cell length, cell shape (three angles),
@@ -155,8 +155,12 @@ class ModelGeneretor(object):
         for i, row in enumerate(self.struct_dict["lattice"]["matrix"]):
             if modify_shape is True:
                 for j, column in enumerate(row):
-                    var = random.uniform(1.00+min, 1.00+max)
-                    column *= var
+                    # var_shape is to change cell shape if the elements of axis is 0.0.
+                    # The validity of this type of changing shape is under testing.
+                    var_shape = random.uniform(min, max)
+                    var_cell = random.uniform(1.00+min, 1.00+max)
+                    column += var_shape
+                    column *= var_cell
                     self.struct_dict["lattice"]["matrix"][i][j] = column
             else:
                 var = random.uniform(1.00+min, 1.00+max)

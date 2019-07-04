@@ -7,8 +7,8 @@ import pymatgen
 from pymatgen.io.vasp.inputs import Poscar
 import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-from pythroughput.model.modelgeneretor import ModelGeneretor
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from model.modelgenerator import ModelGenerator
 
 """
 The test for modify_unsymmetrical() method.
@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 if __name__ == "__main__":
-    gen = ModelGeneretor("inputs/cif/Al2O3_hR30_R-3c_167.cif", fmt="cif")
+    gen = ModelGenerator("inputs/cif/Al2O3_hR30_R-3c_167.cif", fmt="cif")
     
     # cell length, only
     for i in range(3):
