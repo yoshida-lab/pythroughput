@@ -260,16 +260,15 @@ class Calculation_vasp(object):
         if self._output_path is not None:
             self._mv_output_files(backup_file_list)
         
-        results = self.read_results(vasprun, steps, results_list)
+        results = self.read_results(results_list)
         
         return results
     
-    def read_results(self, vasprun,
-                     results_list=["initial_energy",
-                                   "total_energy",
-                                   "initial_forces",
-                                   "final_forces",
-                                   "formula"]):
+    def read_results(self, results_list=["initial_energy",
+                                         "total_energy",
+                                         "initial_forces",
+                                         "final_forces",
+                                         "formula"]):
         """
         Reads results from calculated files, vasprun.xml.
         
@@ -288,7 +287,7 @@ class Calculation_vasp(object):
         results = {}
         try:
             if self._output_path is not None:
-                vasprun = Vasprun(self._output_path + "vasprun.xml")
+                vasprun = Vasprun(self._output_path + "/vasprun.xml")
             else:
                 vasprun = Vasprun("vasprun.xml")
         except (ET.ParseError, ValueError) as error:
