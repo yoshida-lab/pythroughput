@@ -217,7 +217,14 @@ class Calculation_vasp(object):
         return dict(potential)
     
     def get_results(self, steps=1, n_jobs=4,
-                    backup_file_list=["POSCAR", "vasprun.xml"]):
+                    results_list=["initial_energy",
+                                  "total_energy",
+                                  "initial_force",
+                                  "final_force",
+                                  "formula"]
+                    backup_file_list=["POSCAR",
+                                      "CONTCAR",
+                                      "vasprun.xml"]):
         """
         Gets calculation results.
         
@@ -227,6 +234,8 @@ class Calculation_vasp(object):
             Number of relaxation steps
         n_jobs: int
             Number of CPU using in parallel calculation.
+        results_list: list
+            List of required results.
         backup_file_list: list
             List of backuped files.
         
@@ -260,14 +269,19 @@ class Calculation_vasp(object):
             results["error"] = "ValueError"
             return results
         
-        results = self.read_results(vasprun, steps)
+        results = self.read_results(vasprun, steps, results_list)
         
         if self._output_path is not None:
             self._mv_output_files(backup_file_list)
         
         return results
     
-    def read_results(self, vasprun, steps=2):
+    def read_results(self, vasprun,
+                     results_list=["initial_energy",
+                                   "total_energy",
+                                   "initial_force",
+                                   "final_force",
+                                   "formula"]):
         """
         Reads results from calculated files, vasprun.xml.
         
@@ -275,6 +289,8 @@ class Calculation_vasp(object):
         ---------
         vasprun: pymatgen.io.vasp.outputs.Vasprun
             vasprun.xml file, which includes all calculation results.
+        results_list
+            List of required results.
         
         Returns
         -------
@@ -283,13 +299,19 @@ class Calculation_vasp(object):
         """
         results = {}
         
-        if not steps is 1:
-            results["initial_energy"] = self._get_initial_energy(vasprun)
-        results["total_energy"] = self._get_total_energy(vasprun)
-        results["initial_forces"] = self._get_initial_forces(vasprun)
-        results["final_forces"] = self._get_final_forces(vasprun)
-        results["formula"] = self._struct.formula
-        
+        for term in results_list:
+            if term == "initial_energy":
+                results[term] = self._get_initial_energy(vasprun)
+            elif term == "total_energy":
+                results[term] = self._get_total_energy(vasprun)
+            elif term == "initial_forces":
+                results[term] = self._get_initial_forces(vasprun)
+            elif term == "final_forces":
+                results[term] = self._get_final_forces(vasprun)
+            elif term == "formula":
+                results[term] = self._struct.formula
+            else:
+                results[term] = "Undefined parameter"
         return results
     
     def _run_vasp(self, n_jobs):
