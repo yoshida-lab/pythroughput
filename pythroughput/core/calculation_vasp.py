@@ -219,9 +219,9 @@ class Calculation_vasp(object):
     def get_results(self, steps=1, n_jobs=4,
                     results_list=["initial_energy",
                                   "total_energy",
-                                  "initial_force",
-                                  "final_force",
-                                  "formula"]
+                                  "initial_forces",
+                                  "final_forces",
+                                  "formula"],
                     backup_file_list=["POSCAR",
                                       "CONTCAR",
                                       "vasprun.xml"]):
@@ -261,12 +261,8 @@ class Calculation_vasp(object):
         self._run_vasp(n_jobs)
         try:
             vasprun = Vasprun("vasprun.xml")
-        # Treating unconverged calculation.
         except ET.ParseError:
             results["error"] = "ParseError"
-            return results
-        except ValueError:
-            results["error"] = "ValueError"
             return results
         
         results = self.read_results(vasprun, steps, results_list)
@@ -279,8 +275,8 @@ class Calculation_vasp(object):
     def read_results(self, vasprun,
                      results_list=["initial_energy",
                                    "total_energy",
-                                   "initial_force",
-                                   "final_force",
+                                   "initial_forces",
+                                   "final_forces",
                                    "formula"]):
         """
         Reads results from calculated files, vasprun.xml.
