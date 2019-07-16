@@ -222,9 +222,7 @@ class Calculation_vasp(object):
                                   "initial_forces",
                                   "final_forces",
                                   "formula"],
-                    backup_file_list=["POSCAR",
-                                      "CONTCAR",
-                                      "vasprun.xml"]):
+                    backup_file_list=["POSCAR", "vasprun.xml"]):
         """
         Gets calculation results.
         
@@ -259,16 +257,10 @@ class Calculation_vasp(object):
             backup_file_list.append("CONTCAR")
         
         self._run_vasp(n_jobs)
-        try:
-            vasprun = Vasprun("vasprun.xml")
-        except ET.ParseError:
-            results["error"] = "ParseError"
-            return results
-        
-        results = self.read_results(vasprun, steps, results_list)
-        
         if self._output_path is not None:
             self._mv_output_files(backup_file_list)
+        
+        results = self.read_results(vasprun, steps, results_list)
         
         return results
     
@@ -294,6 +286,14 @@ class Calculation_vasp(object):
             dictionary of caluclation results.
         """
         results = {}
+        try:
+            if self._output_path is not None:
+                vasprun = Vasprun(self._output_path + "vasprun.xml")
+            else:
+                vasprun = Vasprun("vasprun.xml")
+        except (ET.ParseError, ValueError) as error:
+            results["error"] = error
+            return results
         
         for term in results_list:
             if term == "initial_energy":
