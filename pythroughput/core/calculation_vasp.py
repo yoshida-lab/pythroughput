@@ -217,11 +217,11 @@ class Calculation_vasp(object):
         return dict(potential)
     
     def get_results(self, steps=1, n_jobs=4,
-                    results_list=["initial_energy",
+                    results_list=["struct_name",
+                                  "initial_energy",
                                   "total_energy",
                                   "initial_forces",
-                                  "final_forces",
-                                  "formula"],
+                                  "final_forces"],
                     backup_file_list=["POSCAR", "vasprun.xml"]):
         """
         Gets calculation results.
@@ -264,11 +264,11 @@ class Calculation_vasp(object):
         
         return results
     
-    def read_results(self, results_list=["initial_energy",
+    def read_results(self, results_list=["struct_name",
+                                         "initial_energy",
                                          "total_energy",
                                          "initial_forces",
-                                         "final_forces",
-                                         "formula"]):
+                                         "final_forces"]):
         """
         Reads results from calculated files, vasprun.xml.
         
@@ -295,7 +295,9 @@ class Calculation_vasp(object):
             return results
         
         for term in results_list:
-            if term == "initial_energy":
+            if term == "struct_name":
+                results[term] = self._struct_name
+            elif term == "initial_energy":
                 results[term] = self._get_initial_energy(vasprun)
             elif term == "total_energy":
                 results[term] = self._get_total_energy(vasprun)

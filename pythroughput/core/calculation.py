@@ -93,7 +93,13 @@ class PyHighThroughput(object):
             self.results[struct_name] = self._calc(struct_name, struct, steps, package)
         return self.results
     
-    def read(self, package="gpaw"):
+    def read(self,
+             package="gpaw",
+             results_list=["struct_name",
+                           "initial_energy",
+                           "total_energy",
+                           "initial_forces",
+                           "final_forces"]):
         """
         Reads calculation results from calculated file.
         
@@ -114,9 +120,10 @@ class PyHighThroughput(object):
             pass
         elif package is "vasp":
             for struct_name, struct in self.structs.items():
+                struct_calculator = self._set_default_calculator(struct_name, struct)
                 self.results[struct_name] = Calculation_vasp(
-                    struct_name, struct, None, None
-                ).read_results(Vasprun(self.output_path+struct_name+"/vasprun.xml"))
+                    struct_name, struct, struct_calculator, None
+                ).read_results(results_list=results_list)
         return self.results
     
     def _calc(self, struct_name, struct, steps, package):
