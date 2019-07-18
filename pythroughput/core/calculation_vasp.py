@@ -395,6 +395,22 @@ class Calculation_vasp(object):
         """
         return vasprun.ionic_steps[-1]["forces"]
     
+    def _is_optimize_converged(self, vasprun):
+        """
+        Is optimization converged.
+        
+        Arguments
+        ---------
+        vasprun: pymatgen.io.vasp.outputs.Vasprun
+            vasprun.xml file, which includes all calculation results.
+        
+        Returns
+        -------
+        bool
+            Is optimization converged.
+        """
+        return vasprun.converged_ionic
+    
     def _mv_output_files(self, backup_file_list):
         """
         Moves output files to output path.
@@ -409,3 +425,4 @@ class Calculation_vasp(object):
                 os.makedirs(self._output_path, exist_ok=True)
             cmd = "mv " + file + " " + self._output_path
             subprocess.run(cmd.split())
+    
