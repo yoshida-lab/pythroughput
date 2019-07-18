@@ -222,7 +222,7 @@ class Calculation_vasp(object):
                                   "total_energy",
                                   "initial_forces",
                                   "final_forces"],
-                    backup_file_list=["POSCAR", "vasprun.xml"]):
+                    backup_file_list=["POSCAR", "vasprun.xml", "INCAR"]):
         """
         Gets calculation results.
         
@@ -338,7 +338,10 @@ class Calculation_vasp(object):
         float
             Calculated total energy [eV].
         """
-        return float(vasprun.final_energy)
+        if vasprun.converged_electronic is True:
+            return float(vasprun.final_energy)
+        else:
+            return "Unconverged"
     
     def _get_initial_energy(self, vasprun):
         """
@@ -354,12 +357,16 @@ class Calculation_vasp(object):
         initial_energy: float
             Calculated total energy of initial structure [eV].
         """
+        
         try:
             initial_istep = vasprun.ionic_steps[0]
-            if initial_istep["e_wo_entrp"] != initial_istep[
-                    'electronic_steps'][-1]["e_0_energy"]:
-                return float(initial_istep["e_wo_entrp"])
-            return float(initial_istep['electronic_steps'][-1]["e_0_energy"])
+            if initial_istep["electronic_steps"] < vasprun.parameters["NELM"]:
+                if initial_istep["e_wo_entrp"] != initial_istep[
+                        'electronic_steps'][-1]["e_0_energy"]:
+                    return float(initial_istep["e_wo_entrp"])
+                return float(initial_istep['electronic_steps'][-1]["e_0_energy"])
+            else:
+                return "Unconverged"
         except (IndexError, KeyError):
             return float('inf')
     
