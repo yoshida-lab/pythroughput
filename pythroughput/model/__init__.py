@@ -3,3 +3,4 @@
 # Distributed under the terms of the BSD 3-clause License.
 
 from . import modelgenerator
+from . import modelanalyser
